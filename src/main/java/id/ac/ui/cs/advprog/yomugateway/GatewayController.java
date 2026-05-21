@@ -48,7 +48,14 @@ public class GatewayController {
             ResponseEntity<byte[]> response = restTemplate.exchange(new URI(url), HttpMethod.valueOf(request.getMethod()), entity, byte[].class);
             HttpHeaders responseHeaders = new HttpHeaders();
             response.getHeaders().forEach((key, values) -> {
-                if (!key.toLowerCase().startsWith("access-control-")) {
+                String lowerKey = key.toLowerCase();
+                if (!lowerKey.startsWith("access-control-") &&
+                    !lowerKey.equals("transfer-encoding") &&
+                    !lowerKey.equals("connection") &&
+                    !lowerKey.equals("keep-alive") &&
+                    !lowerKey.equals("server") &&
+                    !lowerKey.equals("date") &&
+                    !lowerKey.equals("vary")) {
                     responseHeaders.addAll(key, values);
                 }
             });
