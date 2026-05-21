@@ -45,7 +45,14 @@ public class GatewayController {
         HttpEntity<byte[]> entity = new HttpEntity<>(body, headers);
 
         try {
-            return restTemplate.exchange(new URI(url), HttpMethod.valueOf(request.getMethod()), entity, byte[].class);
+            ResponseEntity<byte[]> response = restTemplate.exchange(new URI(url), HttpMethod.valueOf(request.getMethod()), entity, byte[].class);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            response.getHeaders().forEach((key, values) -> {
+                if (!key.toLowerCase().startsWith("access-control-")) {
+                    responseHeaders.addAll(key, values);
+                }
+            });
+            return new ResponseEntity<>(response.getBody(), responseHeaders, response.getStatusCode());
         } catch (Exception e) {
             return ResponseEntity.status(500).body(("Error communicating with Achievement Service: " + e.getMessage()).getBytes());
         }
