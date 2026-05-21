@@ -18,7 +18,7 @@ import java.util.Enumeration;
 @RestController
 public class GatewayController {
 
-    @Value("${achievements.service.url}")
+    @Value("${ACHIEVEMENTS_SERVICE_URL:http://localhost:8083}")
     private String achievementServiceUrl;
 
     @RequestMapping(value = {
