@@ -10,8 +10,12 @@ public class CorsConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*") // Mengizinkan semua origin (Vercel, Localhost, dll)
-                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+                .allowedOrigins(
+                        "http://localhost:3000", 
+                        "https://yomu-frontend-zeta.vercel.app",
+                        "https://yomu-frontend.vercel.app"
+                )
+                .allowedMethods("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
