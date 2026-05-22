@@ -113,7 +113,7 @@ public class GatewayController {
             "/api/user/**"
     })
     public ResponseEntity<byte[]> proxyAuthRequest(HttpServletRequest request, @RequestBody(required = false) byte[] body) throws URISyntaxException {
-        RestTemplate restTemplate = new RestTemplate();
+        RestTemplate restTemplate = new RestTemplate(new org.springframework.http.client.JdkClientHttpRequestFactory());
         
         String path = request.getRequestURI();
         if (path.startsWith("/api/")) {
