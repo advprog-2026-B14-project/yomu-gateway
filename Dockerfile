@@ -1,12 +1,29 @@
+# Stage 1: Build
+FROM eclipse-temurin:21-jdk-alpine AS builder
 
-# Menggunakan base image JDK 21 yang ringan (Alpine Linux)
-FROM eclipse-temurin:21-jdk-alpine
-
-# Menentukan direktori kerja di dalam kontainer
 WORKDIR /app
 
-# Menyalin file JAR hasil build ke dalam kontainer
-COPY build/libs/*SNAPSHOT.jar app.jar
+# Salin script wrapper gradle dan konfigurasi
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle.kts .
+COPY settings.gradle.kts .
 
-# Perintah untuk menjalankan aplikasi saat kontainer dimulai
+# Pastikan script gradlew bisa dieksekusi (penting jika di Linux/Alpine)
+RUN chmod +x gradlew
+
+# Salin source code
+COPY src src
+
+# Jalankan proses build (skip test agar lebih cepat saat deploy)
+RUN ./gradlew bootJar -x test
+
+# Stage 2: Runtime
+FROM eclipse-temurin:21-jdk-alpine
+
+WORKDIR /app
+
+# Salin hasil build dari Stage 1
+COPY --from=builder /app/build/libs/*SNAPSHOT.jar app.jar
+
 ENTRYPOINT ["java", "-jar", "app.jar"]
