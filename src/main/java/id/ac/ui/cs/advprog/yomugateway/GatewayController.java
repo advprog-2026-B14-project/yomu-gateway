@@ -62,6 +62,13 @@ public class GatewayController {
         RestTemplate restTemplate = new RestTemplate();
         
         String path = request.getRequestURI();
+
+        if (path.startsWith("/api/forum")) {
+            path = path.replaceFirst("/api/forum", "/api");
+        } else if (path.startsWith("/api/diskusi")) {
+            path = path.replaceFirst("/api/diskusi", "/api");
+        }
+        
         String query = request.getQueryString();
         String url = forumServiceUrl + path + (query != null ? "?" + query : "");
 
