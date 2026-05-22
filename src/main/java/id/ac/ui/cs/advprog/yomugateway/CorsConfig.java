@@ -15,7 +15,7 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://yomu-frontend-zeta.vercel.app",
                         "https://yomu-frontend.vercel.app"
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
