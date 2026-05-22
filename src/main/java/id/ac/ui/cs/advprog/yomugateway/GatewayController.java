@@ -21,6 +21,9 @@ public class GatewayController {
     @Value("${ACHIEVEMENTS_SERVICE_URL:http://localhost:8083}")
     private String achievementServiceUrl;
 
+    @Value("${FORUM_SERVICE_URL:http://localhost:8084}")
+    private String forumServiceUrl;
+
     @RequestMapping(value = {
             "/api/achievements/**",
             "/api/admin/master/**",
@@ -62,6 +65,42 @@ public class GatewayController {
             return new ResponseEntity<>(response.getBody(), responseHeaders, response.getStatusCode());
         } catch (Exception e) {
             return ResponseEntity.status(500).body(("Error communicating with Achievement Service: " + e.getMessage()).getBytes());
+        }
+    }
+
+    @RequestMapping(value = {
+            "/api/forum/**",
+            "/api/diskusi/**"
+    })
+    public ResponseEntity<byte[]> proxyForumRequest(HttpServletRequest request, @RequestBody(required = false) byte[] body) throws URISyntaxException {
+        RestTemplate restTemplate = new RestTemplate();
+        
+        String path = request.getRequestURI();
+
+        if (path.startsWith("/api/forum")) {
+            path = path.replaceFirst("/api/forum", "/api");
+        } else if (path.startsWith("/api/diskusi")) {
+            path = path.replaceFirst("/api/diskusi", "/api");
+        }
+        
+        String query = request.getQueryString();
+        String url = forumServiceUrl + path + (query != null ? "?" + query : "");
+
+        HttpHeaders headers = new HttpHeaders();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            if (!headerName.equalsIgnoreCase("host")) {
+                headers.add(headerName, request.getHeader(headerName));
+            }
+        }
+
+        HttpEntity<byte[]> entity = new HttpEntity<>(body, headers);
+
+        try {
+            return restTemplate.exchange(new URI(url), HttpMethod.valueOf(request.getMethod()), entity, byte[].class);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(("Error communicating with Forum Service: " + e.getMessage()).getBytes());
         }
     }
 }
