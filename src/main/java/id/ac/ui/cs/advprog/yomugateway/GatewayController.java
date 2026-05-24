@@ -130,7 +130,8 @@ public class GatewayController {
             String headerName = headerNames.nextElement();
             if (!headerName.equalsIgnoreCase("host")
                     && !headerName.equalsIgnoreCase("transfer-encoding")
-                    && !headerName.equalsIgnoreCase("content-length")) {
+                    && !headerName.equalsIgnoreCase("content-length")
+                    && !headerName.equalsIgnoreCase("accept-encoding")) {
                 headers.add(headerName, request.getHeader(headerName));
             }
         }
