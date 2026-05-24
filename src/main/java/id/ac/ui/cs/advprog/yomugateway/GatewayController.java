@@ -151,7 +151,9 @@ public class GatewayController {
                     && !lowerKey.equals("keep-alive")
                     && !lowerKey.equals("server")
                     && !lowerKey.equals("date")
-                    && !lowerKey.equals("vary")) {
+                    && !lowerKey.equals("vary")
+                    && !lowerKey.equals("content-length")
+                    && !lowerKey.equals("content-encoding")) {
                 responseHeaders.addAll(key, values);
             }
         });
