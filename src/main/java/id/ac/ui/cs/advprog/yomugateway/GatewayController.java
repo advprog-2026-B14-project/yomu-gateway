@@ -145,15 +145,10 @@ public class GatewayController {
 
         sourceHeaders.forEach((key, values) -> {
             String lowerKey = key.toLowerCase();
-            if (!lowerKey.startsWith("access-control-")
-                    && !lowerKey.equals("transfer-encoding")
-                    && !lowerKey.equals("connection")
-                    && !lowerKey.equals("keep-alive")
-                    && !lowerKey.equals("server")
-                    && !lowerKey.equals("date")
-                    && !lowerKey.equals("vary")
-                    && !lowerKey.equals("content-length")
-                    && !lowerKey.equals("content-encoding")) {
+            // Strict whitelist of safe headers to forward from the downstream service
+            if (lowerKey.equals("content-type")
+                    || lowerKey.equals("content-disposition")
+                    || lowerKey.equals("cache-control")) {
                 responseHeaders.addAll(key, values);
             }
         });
